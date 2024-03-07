@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    console.log('connecting');
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    socket.on('connect', function() {
+        console.log('Connected');
+    });
+    function sendMessage() {
+        var message = document.getElementById("message").value;
+        socket.emit('send_message', message);
+        document.getElementById("message").value = ""; // Clear text field
+    }
+    socket.on('receive_message', function(message) {
+        console.log('Received:', message);
+        // Handle received message (e.g., display it on the page)
+        var div = document.createElement('div');
+        div.textContent = 'Q: ' + message;
+        document.body.appendChild(div);
+    });
+    socket.on('receive_answer', function(message) {
+        console.log('Answer:', message);
+        // Handle received message (e.g., display it on the page)
+        var div = document.createElement('div');
+        div.textContent = 'A: ' + message;
+        document.body.appendChild(div);
+    });
+</script>
+</head>
+<body>
+    <div><textarea id="message" placeholder="Type your message"></textarea>
+    <button onclick="sendMessage()">Send</button>
+</div>
+</body>
+</html>
